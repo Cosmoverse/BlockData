@@ -95,3 +95,5 @@ public function onPlayerInteract(PlayerInteractEvent $event) : void{
 	}
 }
 ```
+
+Also check out [BlockData-Example-Plugin](https://github.com/Cosmoverse/BlockData-Example-Plugin).
