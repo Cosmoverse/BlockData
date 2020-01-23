@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\blockdata;
+namespace cosmicpe\blockdata\world;
 
 use pocketmine\event\Listener;
 use pocketmine\event\plugin\PluginDisableEvent;
 use pocketmine\event\world\ChunkLoadEvent;
 use pocketmine\event\world\ChunkUnloadEvent;
 use pocketmine\event\world\WorldLoadEvent;
+use pocketmine\event\world\WorldSaveEvent;
 use pocketmine\event\world\WorldUnloadEvent;
 use pocketmine\plugin\Plugin;
 use pocketmine\Server;
@@ -41,6 +42,17 @@ final class BlockDataWorldListener implements Listener{
 	 */
 	public function onWorldLoad(WorldLoadEvent $event) : void{
 		$this->manager->load($event->getWorld());
+	}
+
+	/**
+	 * @param WorldSaveEvent $event
+	 * @priority MONITOR
+	 */
+	public function onWorldSave(WorldSaveEvent $event) : void{
+		$world = $event->getWorld();
+		if($world->getAutoSave()){
+			$this->manager->save($world);
+		}
 	}
 
 	/**

@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\blockdata;
+namespace cosmicpe\blockdata\world;
 
+use cosmicpe\blockdata\BlockData;
+use cosmicpe\blockdata\BlockDataFactory;
 use LevelDB;
 use LevelDBWriteBatch;
 use pocketmine\nbt\BaseNbtSerializer;
@@ -22,35 +24,38 @@ final class BlockDataChunk{
 	/** @var BlockData[]|null[] */
 	private $block_cache = [];
 
+	/** @var BlockData[]|null[] */
+	private $update_queue = [];
+
 	public function __construct(LevelDB $database, BaseNbtSerializer $serializer){
 		$this->database = $database;
 		$this->serializer = $serializer;
 	}
 
 	public function getBlockDataAt(int $x, int $y, int $z) : ?BlockData{
-		if(isset($this->block_cache[$hash = World::blockHash($x, $y, $z)])){
-			return $this->block_cache[$hash];
+		if(!isset($this->block_cache[$hash = World::blockHash($x, $y, $z)])){
+			$buffer = $this->database->get("b" . $hash);
+			if($buffer !== false){
+				$this->block_cache[$hash] = BlockDataFactory::nbtDeserialize($this->serializer->read($buffer)->mustGetCompoundTag());
+			}
 		}
 
-		$buffer = $this->database->get("b" . $hash);
-		if($buffer === false){
-			return $this->block_cache[$hash] = null;
-		}
-
-		return $this->block_cache[$hash] = BlockDataFactory::nbtDeserialize($this->serializer->read($buffer)->mustGetCompoundTag());
+		return $this->block_cache[$hash] ?? $this->block_cache[$hash] = null;
 	}
 
 	public function setBlockDataAt(int $x, int $y, int $z, ?BlockData $data) : void{
-		$this->block_cache[World::blockHash($x, $y, $z)] = $data;
+		$this->block_cache[$hash = World::blockHash($x, $y, $z)] = $data;
+		$this->update_queue[$hash] = $data;
 	}
 
-	public function unload() : void{
-		if(count($this->block_cache) > 0){
+	public function save() : void{
+		if(count($this->update_queue) > 0){
 			$batch = new LevelDBWriteBatch();
-			foreach($this->block_cache as $hash => $data){
+			foreach($this->update_queue as $hash => $data){
 				$data !== null ? $batch->put("b" . $hash, $this->serializer->write(new TreeRoot(BlockDataFactory::nbtSerialize($data)))) : $batch->delete("b" . $hash);
 			}
 			$this->database->write($batch);
+			$this->update_queue = [];
 		}
 	}
 }

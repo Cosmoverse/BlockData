@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\blockdata;
+namespace cosmicpe\blockdata\world;
 
+use cosmicpe\blockdata\BlockData;
 use LevelDB;
 use pocketmine\nbt\BigEndianNbtSerializer;
 use pocketmine\plugin\Plugin;
@@ -55,15 +56,25 @@ final class BlockDataWorld{
 		$this->chunks[World::chunkHash($chunkX, $chunkZ)] = new BlockDataChunk($this->database, $this->serializer);
 	}
 
-	public function unloadChunk(int $chunkX, int $chunkZ) : void{
-		$this->chunks[$hash = World::chunkHash($chunkX, $chunkZ)]->unload();
+	public function unloadChunk(int $chunkX, int $chunkZ, bool $save = true) : void{
+		$hash = World::chunkHash($chunkX, $chunkZ);
+		if($save){
+			$this->chunks[$hash]->save();
+		}
 		unset($this->chunks[$hash]);
 	}
 
+	public function save() : void{
+		foreach($this->chunks as $chunk){
+			$chunk->save();
+		}
+	}
+
 	public function close() : void{
+		$save = $this->world->getAutoSave();
 		foreach($this->chunks as $hash => $chunk){
 			World::getXZ($hash, $chunkX, $chunkZ);
-			$this->unloadChunk($chunkX, $chunkZ);
+			$this->unloadChunk($chunkX, $chunkZ, $save);
 		}
 		$this->database->close();
 	}

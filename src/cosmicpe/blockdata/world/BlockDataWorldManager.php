@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\blockdata;
+namespace cosmicpe\blockdata\world;
 
 use pocketmine\plugin\Plugin;
 use pocketmine\world\World;
@@ -42,5 +42,9 @@ final class BlockDataWorldManager{
 
 	public function get(World $world) : BlockDataWorld{
 		return $this->worlds[$world->getId()];
+	}
+
+	public function save(World $world) : void{
+		$this->worlds[$world->getId()]->save();
 	}
 }
