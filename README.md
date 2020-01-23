@@ -17,6 +17,7 @@ If this worries you, BlockData is backed by LevelDB and uses the [snappy](http:/
 BlockData instances once created by the virion are cached until the chunk unloads.
 2. There's an inconsistency in deleting block => deleting data. This is due to the fact that blocks can be set by several different ways but there aren't the same number of ways to directly listen for block changes.
 Blocks can be changed using `World::setBlockAt()`, `World::setChunk()` or even when the plugin using this virion is disabled and the plugin will never know that the block was deleted, so the BlockData in such cases will exist well after the block has been deleted.
+3. Because BlockData doesn't autoload with chunks (unlike tiles), you can't efficiently write BlockData that's always ticking.
 
 ### Developer Docs
 The first thing your plugin will have to do to gain access to this virion's API is request a `BlockDataWorldManager` instance.
