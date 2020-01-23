@@ -4,12 +4,19 @@ declare(strict_types=1);
 
 namespace cosmicpe\blockdata\world;
 
+use BadMethodCallException;
 use pocketmine\plugin\Plugin;
 use pocketmine\world\World;
 
 final class BlockDataWorldManager{
 
 	public static function create(Plugin $plugin) : BlockDataWorldManager{
+		static $created = [];
+		if(isset($created[$name = $plugin->getName()])){
+			throw new BadMethodCallException("Tried to create BlockDataWorldManager twice as " . $name);
+		}
+
+		$created[$name] = true;
 		$instance = new self($plugin);
 		$plugin->getServer()->getPluginManager()->registerEvents(new BlockDataWorldListener($plugin, $instance), $plugin);
 		return $instance;
