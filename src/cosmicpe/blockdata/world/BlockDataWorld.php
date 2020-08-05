@@ -58,10 +58,12 @@ final class BlockDataWorld{
 
 	public function unloadChunk(int $chunkX, int $chunkZ, bool $save = true) : void{
 		$hash = World::chunkHash($chunkX, $chunkZ);
-		if($save){
-			$this->chunks[$hash]->save();
+		if(isset($this->chunks[$hash])){
+			if($save){
+				$this->chunks[$hash]->save();
+			}
+			unset($this->chunks[$hash]);
 		}
-		unset($this->chunks[$hash]);
 	}
 
 	public function save() : void{
