@@ -32,6 +32,10 @@ final class BlockDataWorldManager{
 		$this->plugin = $plugin;
 	}
 
+	public function isLoaded(World $world) : bool{
+		return isset($this->worlds[$world->getId()]);
+	}
+
 	public function load(World $world) : void{
 		$this->worlds[$world->getId()] = new BlockDataWorld($this->plugin, $world);
 	}

@@ -50,7 +50,7 @@ final class BlockDataWorldListener implements Listener{
 	 */
 	public function onWorldSave(WorldSaveEvent $event) : void{
 		$world = $event->getWorld();
-		if($world->getAutoSave()){
+		if($world->getAutoSave() && $this->manager->isLoaded($world)){
 			$this->manager->save($world);
 		}
 	}
@@ -78,6 +78,9 @@ final class BlockDataWorldListener implements Listener{
 	 */
 	public function onChunkUnload(ChunkUnloadEvent $event) : void{
 		$chunk = $event->getChunk();
-		$this->manager->get($event->getWorld())->unloadChunk($chunk->getX(), $chunk->getZ());
+		$world = $event->getWorld();
+		if($this->manager->isLoaded($world)){
+			$this->manager->get($world)->unloadChunk($chunk->getX(), $chunk->getZ());
+		}
 	}
 }
