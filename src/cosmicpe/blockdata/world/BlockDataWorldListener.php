@@ -68,8 +68,7 @@ final class BlockDataWorldListener implements Listener{
 	 * @priority MONITOR
 	 */
 	public function onChunkLoad(ChunkLoadEvent $event) : void{
-		$chunk = $event->getChunk();
-		$this->manager->get($event->getWorld())->loadChunk($chunk->getX(), $chunk->getZ());
+		$this->manager->get($event->getWorld())->loadChunk($event->getChunkX(), $event->getChunkZ());
 	}
 
 	/**
@@ -77,10 +76,9 @@ final class BlockDataWorldListener implements Listener{
 	 * @priority MONITOR
 	 */
 	public function onChunkUnload(ChunkUnloadEvent $event) : void{
-		$chunk = $event->getChunk();
 		$world = $event->getWorld();
 		if($this->manager->isLoaded($world)){
-			$this->manager->get($world)->unloadChunk($chunk->getX(), $chunk->getZ());
+			$this->manager->get($world)->unloadChunk($event->getChunkX(), $event->getChunkZ());
 		}
 	}
 }
