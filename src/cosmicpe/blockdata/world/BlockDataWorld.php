@@ -78,6 +78,6 @@ final class BlockDataWorld{
 			World::getXZ($hash, $chunkX, $chunkZ);
 			$this->unloadChunk($chunkX, $chunkZ, $save);
 		}
-		$this->database->close();
+		unset($this->database);
 	}
 }
