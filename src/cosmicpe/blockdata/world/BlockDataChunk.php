@@ -12,6 +12,7 @@ use pocketmine\nbt\BaseNbtSerializer;
 use pocketmine\nbt\BigEndianNbtSerializer;
 use pocketmine\nbt\TreeRoot;
 use pocketmine\world\World;
+use function array_key_exists;
 
 final class BlockDataChunk{
 
@@ -33,7 +34,7 @@ final class BlockDataChunk{
 	}
 
 	public function getBlockDataAt(int $x, int $y, int $z) : ?BlockData{
-		if(!isset($this->block_cache[$hash = World::blockHash($x, $y, $z)])){
+		if(!array_key_exists($hash = World::blockHash($x, $y, $z), $this->block_cache)){
 			$buffer = $this->database->get("b" . $hash);
 			if($buffer !== false){
 				$this->block_cache[$hash] = BlockDataFactory::nbtDeserialize($this->serializer->read($buffer)->mustGetCompoundTag());
