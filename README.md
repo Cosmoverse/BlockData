@@ -20,6 +20,11 @@ Blocks can be changed using `World::setBlockAt()`, `World::setChunk()` or even w
 3. Because BlockData doesn't autoload with chunks (unlike tiles), you can't efficiently write BlockData that's always ticking.
 
 ### Developer Docs
+Install with the Virion 3 standard:
+```bash
+$ composer require cosmicpe/blockdata
+```
+
 The first thing your plugin will have to do to gain access to this virion's API is request a `BlockDataWorldManager` instance.
 `BlockDataWorldManager` maps `BlockDataWorld`s to pocketmine's worlds. `BlockDataWorld` provides an API to get and set `BlockData`.
 ```php

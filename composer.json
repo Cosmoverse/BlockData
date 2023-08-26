@@ -1,0 +1,15 @@
+{
+  "name": "cosmicpe/blockdata",
+  "require": {
+    "pmmp/pocketmine-mp": "^5.0.0"
+  },
+  "autoload": {
+    "classmap": "src"
+  },
+  "extra": {
+    "virion": {
+      "spec": "3.0",
+      "namespace-root": "cosmicpe\\blockdata"
+    }
+  }
+}
