@@ -1,7 +1,7 @@
 {
   "name": "cosmicpe/blockdata",
   "require": {
-    "pmmp/pocketmine-mp": "^5.0.0"
+    "pocketmine/pocketmine-mp": "^5.0.0"
   },
   "autoload": {
     "classmap": "src"
